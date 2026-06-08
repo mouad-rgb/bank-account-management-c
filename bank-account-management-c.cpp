@@ -15,16 +15,16 @@ void ajt_Compte (compte **debut ){
 	printf("---------------------------------------\n");
     compte *ne=(compte*)malloc(sizeof(compte));
     if(ne==NULL){
-    printf("Erreur d'allocation\n");
+    printf("Allocation error\n");
     return;
 	}
-        printf("donner le numero du compte :");
+        printf("Enter account number: ");
         scanf("%d",&ne->num);
         getchar();
-        printf("donner le nom du titulaire du compte :");
+        printf("Enter account holder name: ");
         fgets(ne->nom,sizeof(ne->nom),stdin);
         ne->nom[strcspn(ne->nom, "\n")] = '\0';
-        printf("donner le solde du compte :");
+        printf("Enter account balance: ");
         scanf("%f",&ne->solde);
     ne->suivant=NULL;
 
@@ -44,17 +44,17 @@ void ajt_Compte (compte **debut ){
 void afficheCompte(compte *debut){
 	printf("---------------------------------------\n");
     if(debut==NULL){
-        printf("La liste est vide \n");
+        printf("The list is empty\n");
         printf("---------------------------------------\n");
         return;
     }
     compte *temp=debut;
     while(temp!=NULL){
-        printf("Le numero du compte : %d\nLe nom du titulaire : %s\nLe Solde : %0.2f\n",temp->num,temp->nom,temp->solde);
+        printf("Account number: %d\nAccount holder: %s\nBalance: %0.2f\n",temp->num,temp->nom,temp->solde);
         printf("---------------------------------------\n");
         temp=temp->suivant;
     }
-    printf("FIN\n");
+    printf("END\n");
     printf("---------------------------------------\n");
 }
 
@@ -64,25 +64,25 @@ void rechercheCompte (int n){
         while(temp!=NULL){
             if(n==temp->num){
             printf("---------------------------------------\n");
-            printf("Le numero du compte : %d\nLe nom du titulaire : %s\nLe Solde : %0.2f\n",temp->num,temp->nom,temp->solde);
+            printf("Account number: %d\nAccount holder: %s\nBalance: %0.2f\n",temp->num,temp->nom,temp->solde);
             printf("---------------------------------------\n");
             return;
             }
             temp=temp->suivant;
         }
-    printf("Le compte n'existe pas.\n");
+    printf("Account not found.\n");
 }
 
 void suprimerCompte (int n){
     if(debut==NULL){
-        printf("La liste est vide \n");
+        printf("The list is empty\n");
         return;
     }
     compte *temp=debut;
     if (temp->num == n) {
         debut = temp->suivant;
         free(temp);
-        printf("Compte supprime.\n");
+        printf("Account deleted.\n");
         return;
     }
         while(temp->suivant!=NULL){
@@ -90,15 +90,15 @@ void suprimerCompte (int n){
                 compte *sup=temp->suivant;
                 temp->suivant=sup->suivant;
                 free(sup);
-                printf("Compte supprime.\n");
+                printf("Account deleted.\n");
                 return;
             }
             temp=temp->suivant;
         }
-    printf("Le compte n'existe pas.\n");
+    printf("Account not found.\n");
 }
 
-int effectuerTransaction(int type, float montant, int num) {//une solution pour eviter le cas ou lutilisateur done un compte inexistant
+int effectuerTransaction(int type, float montant, int num) { // solution to avoid the case where the user enters a non-existent account
     compte *temp = debut;
 
     while (temp != NULL) {
@@ -107,17 +107,17 @@ int effectuerTransaction(int type, float montant, int num) {//une solution pour 
                 temp->solde += montant;
             } else if (type == 0) { 
                 if (montant > temp->solde) {
-                    printf("Transaction impossible (solde insuffisant).\n");
+                    printf("Transaction failed (insufficient balance).\n");
                 } else {
                     temp->solde -= montant;
                 }
             }
-            return 1; //succes compte exist 
+            return 1; // success: account exists
         }
         temp = temp->suivant;
     }
 
-    return 0;  //compte nesixte pas
+    return 0; // account does not exist
 }
 
 int main (){
@@ -126,7 +126,7 @@ int main (){
 	compte *temp;
     do{
     	printf("---------------------------------------\n");
-		printf("1. Ajouter un compte\n2. Afficher tous les comptes\n3. Rechercher un compte\n4. Supprimer un compte\n5. Effectuer une transaction (depot/retrait)\n0. Quitter\nVotre choix : ");
+		printf("1. Add an account\n2. Display all accounts\n3. Search for an account\n4. Delete an account\n5. Perform a transaction (deposit/withdrawal)\n0. Quit\nYour choice: ");
 		scanf("%d",&sw);
 		printf("---------------------------------------\n");
 		switch (sw){
@@ -137,57 +137,55 @@ int main (){
                 afficheCompte(debut);
                 break;
             case 3:
-            	if(debut==NULL){//si la liste est vide
-			        printf("La liste est vide \n");
+            	if(debut==NULL){ // if the list is empty
+			        printf("The list is empty\n");
 			        printf("---------------------------------------\n");
 			        break;
 			    }
-                printf("donner le numero du compte a chercher : ");
+                printf("Enter account number to search: ");
                 scanf("%d",&rech);
                 rechercheCompte(rech);
                 break;
             case 4:
-            	if(debut==NULL){//si la liste est vide
-			        printf("La liste est vide \n");
+            	if(debut==NULL){ // if the list is empty
+			        printf("The list is empty\n");
 			        printf("---------------------------------------\n");
 			        break;
 			    }
-                printf("donner le numero du compte a supprimer :");
+                printf("Enter account number to delete: ");
                 scanf("%d",&sup);
                 suprimerCompte(sup);
                 break;
             case 5:
             	if (debut==NULL){
-    				printf("La liste est vide \n");
+    				printf("The list is empty\n");
     				printf("---------------------------------------\n");
        				 break;
 				}
 				
-            	printf("numero du compte :");
+            	printf("Account number: ");
                	scanf("%d",&num);
-               	if (!effectuerTransaction(2, 0, num)) {  //test de l existance du compte
-      			  printf("Le compte n'existe pas.\n");
+               	if (!effectuerTransaction(2, 0, num)) { // check if account exists
+      			  printf("Account not found.\n");
       			  break;
     			}
                 do{
                 printf("---------------------------------------\n");
-                printf("0.pour un retrait\n1.pour un depot\n2.pour quitter\n=>");
+                printf("0. Withdrawal\n1. Deposit\n2. Quit\n=>");
                 scanf("%d",&dr);            
                     switch(dr){
                         case 1:
-                        
-                            printf("donner le montant: ");
+                            printf("Enter amount: ");
                             scanf("%f",&montant);
                             effectuerTransaction(1,montant,num);
                             break;
                         case 0:
-        
-                            printf("donner le montant:\n");
+                            printf("Enter amount:\n");
                             scanf("%f",&montant);
                             effectuerTransaction(0,montant,num);
                             break;
                         case 2:
-                        	printf("Fin de transaction\n");
+                        	printf("End of transaction\n");
                         	break;
                         default:
                             printf("error");
@@ -197,7 +195,7 @@ int main (){
                 }while(dr!=2);
                 break;
             case 0:
-                printf("Au revoir");
+                printf("Goodbye");
                 break;
             default:
                 printf("error\n");
